@@ -156,7 +156,7 @@ origins <- 120:(N - 1)
 actual <- y[121:N, ]
 
 qd$date[c(121, N)]
-# Each variable ill produce 120 forecast, starting in 1990-03-01 till 2019-12-01.
+# Each variable will produce 120 forecast, starting in 1990-03-01 till 2019-12-01.
 
 # 4.2. OLS VARs FRQ
 var_ols_fc <- function(z, p) {
@@ -171,7 +171,7 @@ fc_var1 <- NULL
 fc_var4 <- NULL
 for (T in origins) {
   fc_var1 <- rbind(fc_var1, var_ols_fc(y[1:T, ], 1))
-  fc_var4 <- rbind(fc_var4, var_ols_fc(y[1:T, ], 4))
+  fc_var4 <- rbind(fc_var4, var_ols_fc(y[1:T, ], 4)) 
 }
 
 rmse_by_var <- function(f) sqrt(colMeans((actual - f)^2))
@@ -179,9 +179,10 @@ rmse_by_var <- function(f) sqrt(colMeans((actual - f)^2))
 rmse_by_var(fc_var1)
 rmse_by_var(fc_var4)
 
-# The correlation of the ARIMA and ETS model is 0.87. Generally when two models are correlated in terms of error, 
-# then combining the models results in producing similar results. Since the ARIMA and ETS model uses the same data, 
-# correlated error does not add more information to the model when averaged.
+# # Var(1) forecast better than Var(4) for 7 out of 8 variables. Var(1) forecasts better than Var(4)
+# because var 4 contains several parameters that are lagged by 4 periods. Our original model already 
+# has parameter to begin with, by lagging it by 4 we have 8*(8*4+1) = 264 coefficients for VAR(4) and 8(8*1 + 1) = 72
+# parameters for VAR(1). With that many parameters, VAR(4) will have a larger error caused by overfitting of the model.
 
 #4.3 A BVAR
 bvar_cv <- function(lambda) {
@@ -208,6 +209,7 @@ fc_bvar_03 = readRDS("results/fc_bvar_03.rds")
 
 # 4.3b FRQ
 set.seed(422)
+
 fc_bvar_005 <- bvar_cv(0.05)
 
 var_results <- tibble(
@@ -218,8 +220,7 @@ var_results <- tibble(
   `BVAR(4), lambda = 0.05` = rmse_by_var(fc_bvar_005)
 )
 
-saveRDS(var_results, "results/var_results.rds")
-
+var_results = readRDS("results/var_results.rds")
 var_results = var_results |> knitr::kable(digits = 3)
 
 var_results
@@ -249,7 +250,7 @@ e_bvar <- actual[, "gdp"] - fc_bvar_03[, 1]
 forecast::dm.test(e_var4, e_bvar, h = 1, power = 2)
 
 # The Diebold-Marino test for GDP growth for VAR(4) vs BVAR(4) with lambda = 0.3 has a p-value of 0.03. This tells
-# us that at the 0.05 significance level, ee reject the null hypothesis and say that there is statistically significant 
+# us that at the 0.05 significance level, we reject the null hypothesis and say that there is statistically significant 
 # evidence that BVAR(4) is better than the VAR(4). This confirms my result in 4.3b that BVAR(4) does better 
 # however the p-value for significance level is not as strong on the 0.05 level.
 
@@ -292,7 +293,8 @@ tcode[c("INDPRO", "PAYEMS", "CPIAUCSL", "FEDFUNDS")]
 # FEDFUNDS was transformed with d(x) giving us the first difference. 
 # 
 # INDPRO represents the total industrial production index where the growth trends ith the level of the series. 
-# The FEDFUNDS is the interest rate set by the Feds and does not follow a trend. Instead we take the difference of
+# The FEDFUNDS is the interest rate set by the Feds and does not follow a trend. Instead we take the difference of 
+# each period to see how the interest rate changes over time.
 
 # 5.2. Estimate the Factors
 
@@ -318,10 +320,11 @@ First_Factor
 
 # 5.2c FRQ
 pc1 = sort(abs(cor(pc$x[, 1], Z))[1, ], decreasing = TRUE)[1:8]
-pc2 = sort(abs(cor(pc$x[, 2], Z))[1, ], decreasing = TRUE)[1:8]:8]
+pc2 = sort(abs(cor(pc$x[, 2], Z))[1, ], decreasing = TRUE)[1:8]
 pc1 
 pc2
 # The names of the series can be looked up in the FRED-MD documentation, FRED-MD_updated_appendix.pdf, which is posted on Canvas. Based on these series, and on your plot, how would you describe what each factor captures?
+
 
 # 5.3. Replicate the Horse Race from Class FRQ
 ip <- fm$INDPRO
@@ -340,7 +343,9 @@ for (T in init:(n - 1)) {
 
 c(RMSE_AR = sqrt(mean(e_ar^2)), RMSE_FA = sqrt(mean(e_fa^2)))
 
-# In class we saw an RMSE of 0.617 for the AR(1) and 0.589 with the factors. Confirm that you get the same numbers. Why would it be cheating to estimate the factors once, using the full sample, and use those in the horse race?
+# #Using the full data set to estimate the parameters then fitting it on the horse race model 
+# will include correlation in the data that are not present at the time. This causes information 
+# leakage when modeling the training set into the testing set.
 
 #5.4. A Direct Forecast of Inflation FRQ
 direct_race <- function(series, h = 12, r = 3) {
@@ -369,4 +374,6 @@ direct_race <- function(series, h = 12, r = 3) {
 }
 
 direct_race("CPIAUCSL")
-# Do the factors improve the forecast of 12-month CPI inflation? By what percentage do they reduce the RMSE? Is the difference statistically significant?
+# The percentage change was a 10.42% and 14.55% reduction in error for RMSE and MAE respectively. 
+# The DM value of 0.000443 tells us that there is statistically significant result that FA reduced the error.
+
