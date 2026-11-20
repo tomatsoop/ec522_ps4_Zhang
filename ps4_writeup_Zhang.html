@@ -2296,16 +2296,35 @@ vertical-align: -.125em;
 </div>
 </div>
 </div>
-<p>The seasonal trend of liquor sales remain steady throughout the year however there is a spike in December followed by a dip in January. The auto plot shows growth with the level of the series and suggests that logging sales may take away that growth in level while capturing the month to month trend.</p>
+<p>The seasonal trend of liquor sales remain steady throughout the year however we see a spike in December followed by a dip in January. The auto plot shows growth with the level of the series and suggesting that logging sales may take away that growth in level while capturing the month to month trend.</p>
 </section>
 <section id="a" class="level3">
 <h3 class="anchored" data-anchor-id="a"><strong>2.2a</strong></h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>liquor_fit_arima</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A mable: 1 x 1
+                               arima
+                             &lt;model&gt;
+1 &lt;ARIMA(1,0,2)(2,1,1)[12] w/ drift&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>liquor_fit_ets</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A mable: 1 x 1
+           ets
+       &lt;model&gt;
+1 &lt;ETS(A,A,A)&gt;</code></pre>
+</div>
+</div>
 <p>The ARIMA Model choose the parameters (1,0,2)(2,1,1)[12] with drift. This means that we are lagging it for 2 periods in the seasonal component(P), taking the first difference (D), 1 period of forecast errors (Q) For the non seasonal model, we are lagging it once and incorporating 2 periods of forecast errors (q). For the ETS model, it chooses 3 additive components with alpha = 0.329 (level smoothing), beta = 0.007 (trend smoothing), and gamma = 0.0001 (seasonal smoothing).</p>
+<p>The ETS model uses all additive terms for Error, Trend, and Seasonality (A,A,A). This means that the seasonal values are added to the model relative to the series units, the trend is represented by a change in fixed units over time, and the error term is added to the predictor.</p>
 </section>
 <section id="b" class="level3">
 <h3 class="anchored" data-anchor-id="b"><strong>2.2b</strong></h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>liquor_fit <span class="sc">|&gt;</span> <span class="fu">select</span>(arima) <span class="sc">|&gt;</span> <span class="fu">gg_tsresiduals</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>liquor_fit <span class="sc">|&gt;</span> <span class="fu">select</span>(arima) <span class="sc">|&gt;</span> <span class="fu">gg_tsresiduals</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -2315,7 +2334,7 @@ vertical-align: -.125em;
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>liquor_fit_ljung</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>liquor_fit_ljung</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 3
   .model lb_stat lb_pvalue
@@ -2327,9 +2346,9 @@ vertical-align: -.125em;
 </section>
 <section id="the-horse-race" class="level3">
 <h3 class="anchored" data-anchor-id="the-horse-race">2.3. The Horse Race</h3>
-<p>The dates of the first forecast is January 2002 and the last forecast is December 2019.</p>
+<p>The dates of the first forecast is January 2002 and the last forecast is December 2019 with 216 forecast origins.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(liquor_cv_fc,<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(liquor_cv_fc,<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A fable: 3 x 5 [1M]
 # Key:     .id, .model [3]
@@ -2342,7 +2361,7 @@ vertical-align: -.125em;
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(liquor_cv_fc,<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(liquor_cv_fc,<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A fable: 3 x 5 [1M]
 # Key:     .id, .model [3]
@@ -2359,7 +2378,7 @@ vertical-align: -.125em;
 <h3 class="anchored" data-anchor-id="b-one-month-ahead-forecast"><strong>2.3b One Month Ahead Foreca</strong>s<strong>t</strong></h3>
 <p>The start and ending dates are January 2002 and December 2019. For the one step ahead forecast, we get 216 forecast origins.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>liquor_accuracy_table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>liquor_accuracy_table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -2394,7 +2413,7 @@ vertical-align: -.125em;
 <section id="are-the-differences-significant-dm-test" class="level3">
 <h3 class="anchored" data-anchor-id="are-the-differences-significant-dm-test">2.4. Are the Differences Significant? DM Test</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>arima_ets</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>arima_ets</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Diebold-Mariano Test
@@ -2406,7 +2425,7 @@ alternative hypothesis: two.sided</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>arima_snaive</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>arima_snaive</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Diebold-Mariano Test
@@ -2417,13 +2436,14 @@ DM = -10.755, Forecast horizon = 1, Loss function power = 2, p-value &lt;
 alternative hypothesis: two.sided</code></pre>
 </div>
 </div>
-<p>The DM statistic for the ARIMA vs ETS model is -2.9062 with a p-value of 0.004042 The DM statistic for the ARIMA vs SNAIVE model is -10.755 with a p-value of &lt; 2.2e-16</p>
-<p>This suggests that the ARIMA model shows significant evidence that it is better than both the ETS and the SNAIVE model. Both . The DM statistic reports a negative value favoring the ARIMA model. As a liquor store chain, I would use the ARIMA model to forecast demand.</p>
+<p>The DM statistic for the ARIMA vs ETS model is -2.9062 with a p-value of 0.004042</p>
+<p>The DM statistic for the ARIMA vs SNAIVE model is -10.755 with a p-value of &lt; 2.2e-16</p>
+<p>This suggests that the ARIMA model shows significant evidence that it is better than both the ETS and the SNAIVE model. The DM statistic reports a negative value favoring the ARIMA model. As a liquor store chain, I would use the ARIMA model to forecast seasonal demand.</p>
 </section>
 <section id="forecast-combination" class="level3">
 <h3 class="anchored" data-anchor-id="forecast-combination">3. Forecast Combination</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>liquor_combo_table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>liquor_combo_table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -2463,7 +2483,7 @@ alternative hypothesis: two.sided</code></pre>
 <section id="b.-correlation" class="level3">
 <h3 class="anchored" data-anchor-id="b.-correlation">3b. Correlation</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(liquor_errs<span class="sc">$</span>arima, liquor_errs<span class="sc">$</span>ets)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(liquor_errs<span class="sc">$</span>arima, liquor_errs<span class="sc">$</span>ets)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.8782931</code></pre>
 </div>
@@ -2480,25 +2500,25 @@ alternative hypothesis: two.sided</code></pre>
 <section id="ols-vars" class="level3">
 <h3 class="anchored" data-anchor-id="ols-vars">4.2. OLS VARs</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rmse_by_var</span>(fc_var1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rmse_by_var</span>(fc_var1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      gdp      cons       inv       emp      infl    unrate       ffr      gs10 
 0.5130384 0.4598547 2.4927057 0.1956584 0.2084055 0.1988068 0.3902989 0.3610310 </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rmse_by_var</span>(fc_var4)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rmse_by_var</span>(fc_var4)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      gdp      cons       inv       emp      infl    unrate       ffr      gs10 
 0.5693241 0.5268484 2.5212629 0.2277561 0.2069608 0.2153966 0.4973504 0.3789663 </code></pre>
 </div>
 </div>
-<p>Here, we can see that Var(1) forecast better than Var(4) for 7 out of 8 variables. Var(1) forecasts better than Var(4) because Var(4) contains several parameters that are lagged by 4 periods. Our original model already has parameter to begin with, by lagging it by 4 we have 8<em>(8</em>4+1) = 264 coefficients for VAR(4) and 8(8*1 + 1) = 72 parameters for VAR(1). With that many parameters, VAR(4) will have a larger error caused by overfitting of the model.</p>
+<p>Here, we can see that Var(1) forecast better than Var(4) for 7 out of 8 variables. Var(1) forecasts better than Var(4) because Var(4) contains several parameters that are lagged by 4 periods. Our original model already has several parameter to begin with, by lagging it by 4 we have 8<em>(8*</em>4+1) = 264 parameters for VAR(4) and 8(8*1 + 1) = 72 parameters for VAR(1). With that many parameters, VAR(4) will have a larger error caused by overfitting of the model.</p>
 </section>
 <section id="a-bvar" class="level3">
 <h3 class="anchored" data-anchor-id="a-bvar">4.3. A BVAR</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>var_results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>var_results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
@@ -2585,7 +2605,7 @@ alternative hypothesis: two.sided</code></pre>
 <section id="c-dm-test" class="level3">
 <h3 class="anchored" data-anchor-id="c-dm-test">4.3c DM test</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>dm_gdp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>dm_gdp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Diebold-Mariano Test
@@ -2598,7 +2618,7 @@ alternative hypothesis: two.sided</code></pre>
 </div>
 <p>The Diebold-Marino test for GDP growth for VAR(4) vs BVAR(4) with lambda = 0.3 has a p-value of 0.03. This tells us that at the 0.05 significance level, we reject the null hypothesis and say that there is statistically significant evidence that BVAR(4) is better than the VAR(4). This confirms my result in 4.3b that BVAR(4) does better however the p-value for significance level is not as strong on the 0.05 level.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>dm_inv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>dm_inv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Diebold-Mariano Test
@@ -2613,7 +2633,7 @@ alternative hypothesis: two.sided</code></pre>
 <section id="a-factor-model-with-fred-md" class="level3">
 <h3 class="anchored" data-anchor-id="a-factor-model-with-fred-md">5. A Factor Model with FRED-MD</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 122
   date           RPI W875RX1 DPCERA3M086SBEA CMRMTSPLx RETAILx INDPRO IPFPNSS
@@ -2637,7 +2657,7 @@ alternative hypothesis: two.sided</code></pre>
 <section id="c-transformations" class="level3">
 <h3 class="anchored" data-anchor-id="c-transformations">5.1c Transformations</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>tcode[<span class="fu">c</span>(<span class="st">&quot;INDPRO&quot;</span>, <span class="st">&quot;PAYEMS&quot;</span>, <span class="st">&quot;CPIAUCSL&quot;</span>, <span class="st">&quot;FEDFUNDS&quot;</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>tcode[<span class="fu">c</span>(<span class="st">&quot;INDPRO&quot;</span>, <span class="st">&quot;PAYEMS&quot;</span>, <span class="st">&quot;CPIAUCSL&quot;</span>, <span class="st">&quot;FEDFUNDS&quot;</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  INDPRO   PAYEMS CPIAUCSL FEDFUNDS 
        5        5        6        2 </code></pre>
@@ -2653,7 +2673,7 @@ alternative hypothesis: two.sided</code></pre>
 <section id="estimate-the-factors-pca" class="level3">
 <h3 class="anchored" data-anchor-id="estimate-the-factors-pca">5.2. Estimate the Factors: PCA</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>PCA5</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>PCA5</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                            PC1      PC2      PC3      PC4      PC5
 Standard deviation     4.258002 2.993839 2.923106 2.597224 2.295261
@@ -2666,11 +2686,11 @@ Cumulative Proportion  0.149840 0.223910 0.294530 0.350280 0.393820</code></pre>
 <section id="b." class="level3">
 <h3 class="anchored" data-anchor-id="b."><strong>5.2b.</strong></h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">date =</span> fm<span class="sc">$</span>date, <span class="at">F1 =</span> F1) <span class="sc">|&gt;</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, F1)) <span class="sc">+</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;First Factor from FRED-MD&quot;</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">date =</span> fm<span class="sc">$</span>date, <span class="at">F1 =</span> F1) <span class="sc">|&gt;</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, F1)) <span class="sc">+</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;First Factor from FRED-MD&quot;</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -2680,14 +2700,14 @@ Cumulative Proportion  0.149840 0.223910 0.294530 0.350280 0.393820</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>pc1 </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>pc1 </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   PAYEMS IPMANSICS    USGOOD    INDPRO    MANEMP   IPFPNSS    CUMFNS   DMANEMP 
 0.8415788 0.8404473 0.8390159 0.8219976 0.8028499 0.7903078 0.7778686 0.7768615 </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>pc2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>pc2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    CUSR0000SAC DNDGRG3M086SBEA   CUSR0000SA0L2        CPIAUCSL   CUSR0000SA0L5 
       0.7468587       0.7391330       0.7279202       0.7198020       0.7020307 
@@ -2701,7 +2721,7 @@ Cumulative Proportion  0.149840 0.223910 0.294530 0.350280 0.393820</code></pre>
 <section id="replicate-the-horse-race-from-class" class="level3">
 <h3 class="anchored" data-anchor-id="replicate-the-horse-race-from-class">5.3. Replicate the Horse Race from Class</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">RMSE_AR =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(e_ar<span class="sc">^</span><span class="dv">2</span>)), <span class="at">RMSE_FA =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(e_fa<span class="sc">^</span><span class="dv">2</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">RMSE_AR =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(e_ar<span class="sc">^</span><span class="dv">2</span>)), <span class="at">RMSE_FA =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(e_fa<span class="sc">^</span><span class="dv">2</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  RMSE_AR   RMSE_FA 
 0.6168431 0.5887272 </code></pre>
@@ -2712,7 +2732,7 @@ Cumulative Proportion  0.149840 0.223910 0.294530 0.350280 0.393820</code></pre>
 <section id="a-direct-forecast-of-inflation" class="level3">
 <h3 class="anchored" data-anchor-id="a-direct-forecast-of-inflation">5.4. A Direct Forecast of Inflation</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">direct_race</span>(<span class="st">&quot;CPIAUCSL&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">direct_race</span>(<span class="st">&quot;CPIAUCSL&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 7
   series   forecasts RMSE_AR RMSE_FA MAE_AR MAE_FA DM_pvalue

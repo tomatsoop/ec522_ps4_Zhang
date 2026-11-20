@@ -37,11 +37,21 @@ sales_auto
 log_sales_season
 ```
 
-The seasonal trend of liquor sales remain steady throughout the year however there is a spike in December followed by a dip in January. The auto plot shows growth with the level of the series and suggests that logging sales may take away that growth in level while capturing the month to month trend.
+The seasonal trend of liquor sales remain steady throughout the year however we see a spike in December followed by a dip in January. The auto plot shows growth with the level of the series and suggesting that logging sales may take away that growth in level while capturing the month to month trend.
 
 ### **2.2a**
 
+```{r}
+liquor_fit_arima
+```
+
+```{r}
+liquor_fit_ets
+```
+
 The ARIMA Model choose the parameters (1,0,2)(2,1,1)\[12\] with drift. This means that we are lagging it for 2 periods in the seasonal component(P), taking the first difference (D), 1 period of forecast errors (Q) For the non seasonal model, we are lagging it once and incorporating 2 periods of forecast errors (q). For the ETS model, it chooses 3 additive components with alpha = 0.329 (level smoothing), beta = 0.007 (trend smoothing), and gamma = 0.0001 (seasonal smoothing).
+
+The ETS model uses all additive terms for Error, Trend, and Seasonality (A,A,A). This means that the seasonal values are added to the model relative to the series units, the trend is represented by a change in fixed units over time, and the error term is added to the predictor.
 
 ### **2.2b**
 
@@ -57,7 +67,7 @@ The residuals are clustered around 0 but there still seems to be lagging trends 
 
 ### 2.3. The Horse Race
 
-The dates of the first forecast is January 2002 and the last forecast is December 2019.
+The dates of the first forecast is January 2002 and the last forecast is December 2019 with 216 forecast origins.
 
 ```{r}
 head(liquor_cv_fc,3)
@@ -87,9 +97,11 @@ arima_ets
 arima_snaive
 ```
 
-The DM statistic for the ARIMA vs ETS model is -2.9062 with a p-value of 0.004042 The DM statistic for the ARIMA vs SNAIVE model is -10.755 with a p-value of \< 2.2e-16
+The DM statistic for the ARIMA vs ETS model is -2.9062 with a p-value of 0.004042
 
-This suggests that the ARIMA model shows significant evidence that it is better than both the ETS and the SNAIVE model. Both . The DM statistic reports a negative value favoring the ARIMA model. As a liquor store chain, I would use the ARIMA model to forecast demand.
+The DM statistic for the ARIMA vs SNAIVE model is -10.755 with a p-value of \< 2.2e-16
+
+This suggests that the ARIMA model shows significant evidence that it is better than both the ETS and the SNAIVE model. The DM statistic reports a negative value favoring the ARIMA model. As a liquor store chain, I would use the ARIMA model to forecast seasonal demand.
 
 ### 3. Forecast Combination
 
@@ -123,7 +135,7 @@ rmse_by_var(fc_var1)
 rmse_by_var(fc_var4)
 ```
 
-Here, we can see that Var(1) forecast better than Var(4) for 7 out of 8 variables. Var(1) forecasts better than Var(4) because Var(4) contains several parameters that are lagged by 4 periods. Our original model already has parameter to begin with, by lagging it by 4 we have 8*(8*4+1) = 264 coefficients for VAR(4) and 8(8\*1 + 1) = 72 parameters for VAR(1). With that many parameters, VAR(4) will have a larger error caused by overfitting of the model.
+Here, we can see that Var(1) forecast better than Var(4) for 7 out of 8 variables. Var(1) forecasts better than Var(4) because Var(4) contains several parameters that are lagged by 4 periods. Our original model already has several parameter to begin with, by lagging it by 4 we have 8*(8\**4+1) = 264 parameters for VAR(4) and 8(8\*1 + 1) = 72 parameters for VAR(1). With that many parameters, VAR(4) will have a larger error caused by overfitting of the model.
 
 ### 4.3. A BVAR
 
