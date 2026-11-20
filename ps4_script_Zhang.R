@@ -20,15 +20,15 @@ has_gaps(liquor)
 
 # 2.1a FRQ 
 
-log_sales_auto = autoplot(liquor, sales) +  labs(title = "Seasonal plot: US liquor sales", y = "Log sales")
+sales_auto = autoplot(liquor, sales) +  labs(title = "Seasonal plot: US liquor sales", y = "sales")
 
 log_sales_season = gg_season(liquor, log(sales)) + labs(title = "Seasonal plot: US liquor sales", y = "Log sales")
 
-log_sales_auto
+sales_auto
 log_sales_season
 
-# The seasonal trend of liquor sales remain steady throughout the year however there is a spike in December 
-# followed by a dip in January. The auto plot shows growth with the  level of the series and suggests that logging 
+# The seasonal trend of liquor sales remain steady throughout the year however there is a spike in December
+# followed by a dip in January. The auto plot shows growth with the  level of the series and suggests that logging
 # sales may take away that growth in level while capturing the month to month trend.
 
 #2.2 ARIMA and ETS model FRQ
@@ -41,13 +41,13 @@ liquor_fit_arima
 
 liquor_fit_ets
 
-# The ARIMA Model choose the parameters (1,0,2)(2,1,1)[12] with drift. This means that 
-# we are lagging it for 2 periods in the seasonal component(P), taking the first difference (D), 1 period of forecast errors (Q) 
+# The ARIMA Model choose the parameters (1,0,2)(2,1,1)[12] with drift. This means that
+# we are lagging it for 2 periods in the seasonal component(P), taking the first difference (D), 1 period of forecast errors (Q)
 # For the non seasonal model, we are lagging it once and incorporating 2 periods of forecast errors (q).
 # For the ETS model, it chooses 3 additive components with alpha = 0.329 (level smoothing), beta = 0.007 (trend smoothing), and gamma = 0.0001 (seasonal smoothing).
 
 #2.2b FRQ
-liquor_fit_residuals =liquor_fit |> select(arima) |> gg_tsresiduals()
+liquor_fit_residuals = liquor_fit |> select(arima) |> gg_tsresiduals()
 
 liquor_fit_ljung = liquor_fit |> select(arima) |> augment() |> features(.innov, ljung_box, lag = 24, dof = 6)
 
@@ -56,10 +56,10 @@ liquor_fit_ljung
 
 # The residuals  are clustered around 0 but there still seems to be lagging trends within the residuals that have not been captured by the model. 
 
-
 # The Ljung p value of 0 means we reject the null hypothesis that the residuals are white noise.
 
 # 2.3 The Horse Race  FRQ
+
 # liquor_cv <- liquor |>
 #   stretch_tsibble(.init = 120, .step = 1) |>
 #   filter(.id < max(.id))
@@ -72,6 +72,7 @@ liquor_fit_ljung
 #saveRDS(liquor_cv_fit, "results/liquor_cv_fit.rds")
 
 liquor_cv_fit = readRDS("results/liquor_cv_fit.rds")
+liquor_cv_fit
 
 # 2.3b One Month Ahead Forecast and Accuracy
 liquor_cv_fc = liquor_cv_fit |> forecast(h = 1)
@@ -80,9 +81,7 @@ liquor_accuracy = liquor_cv_fc |> accuracy(liquor, measures = list(RMSE = RMSE, 
 liquor_accuracy_table = liquor_accuracy |> select(.model, RMSE, MAE) |> knitr::kable(digits = 2)
 liquor_cv_fc
 liquor_accuracy_table
-
 #The dates of the first forecast is January 2002 and the last forecast is December 2019. 
-liquor_accuracy_table
 # The ARIMA model forecasts the most accurately for both the RMSE and the MAE model.
 
 # 2.4 Are the Differences Significant? FRQ
@@ -109,19 +108,21 @@ arima_snaive
 
 # Part 3 - Forecast Combination 
 #3a Equal weight Combination of ARIMA and ETS
-liquor_combo_fc <- liquor_cv_fit |>
+liquor_combo_fc = liquor_cv_fit |>
   mutate(combo = (arima + ets) / 2) |>
   forecast(h = 1)
 
-liquor_combo_fc = accuracy(liquor, measures = list(RMSE = RMSE, MAE = MAE))
+liquor_combo_table = liquor_combo_fc |>
+  accuracy(liquor, measures = list(RMSE = RMSE, MAE = MAE)) |>
+  select(.model, RMSE, MAE) |>  knitr::kable(digits = 2)
 
-liquor_combo_fc
+liquor_combo_table
 # The combo model does significantly better than ETS or SNAIVE but the ARIMA model still is better by 3.8 in the RMSE and 1.1 the MAE.
 
 # 3b Correlation FRQ
 cor(liquor_errs$arima, liquor_errs$ets)
-# The correlation of the ARIMA and ETS model is 0.87. Generally when two models are correlated in terms of error, 
-# then combining the models results in producing similar results. Since the ARIMA and ETS model uses the same data, 
+# The correlation of the ARIMA and ETS model is 0.87. Generally when two models are correlated in terms of error,
+# then combining the models results in producing similar results. Since the ARIMA and ETS model uses the same data,
 # correlated error does not add more information to the model when averaged.
 
 
@@ -179,8 +180,8 @@ rmse_by_var <- function(f) sqrt(colMeans((actual - f)^2))
 rmse_by_var(fc_var1)
 rmse_by_var(fc_var4)
 
-# # Var(1) forecast better than Var(4) for 7 out of 8 variables. Var(1) forecasts better than Var(4)
-# because var 4 contains several parameters that are lagged by 4 periods. Our original model already 
+# Var(1) forecast better than Var(4) for 7 out of 8 variables. Var(1) forecasts better than Var(4)
+# because var 4 contains several parameters that are lagged by 4 periods. Our original model already
 # has parameter to begin with, by lagging it by 4 we have 8*(8*4+1) = 264 coefficients for VAR(4) and 8(8*1 + 1) = 72
 # parameters for VAR(1). With that many parameters, VAR(4) will have a larger error caused by overfitting of the model.
 
@@ -205,8 +206,6 @@ set.seed(422)
 fc_bvar_03 <- bvar_cv(0.3)
 #saveRDS(fc_bvar_03, "results/fc_bvar_03.rds")
 
-fc_bvar_03 = readRDS("results/fc_bvar_03.rds")
-
 # 4.3b FRQ
 set.seed(422)
 
@@ -230,33 +229,34 @@ var_results
 
 # Both have the same variables and the same lags, so what explains any difference?
 # The BVAR(4) does better than the VAR(4) for all of the variables. There are some variables that does
-# better by a large margin. The VAR(4) model is a OLs model using 4 lag periods. The difference in the 
-# BVAR(4) also uses 4 lag periods however it applies shrinkage to prevent overfitting. This generalizes 
+# better by a large margin. The VAR(4) model is a OLs model using 4 lag periods. The difference in the
+# BVAR(4) also uses 4 lag periods however it applies shrinkage to prevent overfitting. This generalizes
 # the model in a way that the VAR(4) fails to capture.
-
+# 
 # How does it compare to the VAR(1)?
-# # BVAR(4) compared to VAR(1) does worse for most of the variables except for inv, infl, and gs10. VAR(4) 
+# BVAR(4) compared to VAR(1) does worse for most of the variables except for inv, infl, and gs10. VAR(4)
 # does better in t-1 period sensitive variables like GDP, cons, emp, and unrate. This tells us that some variables
 # will do better with a longer lag period and some do better with a shorter lag period.
-# # What happens when ? What does this tell you about the amount of shrinkage? Suppose you used this table to choose your forecasting model. Would the winner’s RMSE here be a fair estimate of how accurately it will forecast in the future? Why or why not?
-# when lambda = 0.05, BVAR(4) does worse than BVAR(4) lambda = 0.3, however there are some variables where lambda = 0.05 
-# does better than VAR(4). This suggests that the amount of shrinkage is important when considering how sensitive the variable 
-# is to the long term effects. 
+# What happens when ? What does this tell you about the amount of shrinkage? Suppose you used this table to choose your forecasting model. Would the winner’s RMSE here be a fair estimate of how accurately it will forecast in the future? Why or why not?
+# when lambda = 0.05, BVAR(4) does worse than BVAR(4) lambda = 0.3, however there are some variables where lambda = 0.05
+# does better than VAR(4). This suggests that the amount of shrinkage is important when considering how sensitive the variable
+# is to the long term effects.
 
 # 4.3c 
 e_var4 <- actual[, "gdp"] - fc_var4[, 1]
 e_bvar <- actual[, "gdp"] - fc_bvar_03[, 1]
 
-forecast::dm.test(e_var4, e_bvar, h = 1, power = 2)
-
+dm_gdp = forecast::dm.test(e_var4, e_bvar, h = 1, power = 2)
+dm_gdp
 # The Diebold-Marino test for GDP growth for VAR(4) vs BVAR(4) with lambda = 0.3 has a p-value of 0.03. This tells
-# us that at the 0.05 significance level, we reject the null hypothesis and say that there is statistically significant 
-# evidence that BVAR(4) is better than the VAR(4). This confirms my result in 4.3b that BVAR(4) does better 
+# us that at the 0.05 significance level, we reject the null hypothesis and say that there is statistically significant
+# evidence that BVAR(4) is better than the VAR(4). This confirms my result in 4.3b that BVAR(4) does better
 # however the p-value for significance level is not as strong on the 0.05 level.
 
-e_var4 <- actual[, "inv"] - fc_var4[, 3]
-e_bvar <- actual[, "inv"] - fc_bvar_03[, 3]
-forecast::dm.test(e_var4, e_bvar, h = 1, power = 2)
+e_var4_inv <- actual[, "inv"] - fc_var4[, 3]
+e_bvar_inv <- actual[, "inv"] - fc_bvar_03[, 3]
+dm_inv = forecast::dm.test(e_var4_inv, e_bvar_inv, h = 1, power = 2)
+dm_inv
 
 # Part 5 – A Factor Model with FRED-MD
 md_raw <- read_csv("data/fredmd_2026-09.csv", show_col_types = FALSE)
@@ -281,7 +281,7 @@ fm <- map2_dfc(md[names(tcode)], tcode, transform_series) |>
   filter(date >= as.Date("1960-03-01"), date <= as.Date("2019-12-01"))
 
 fm <- fm[, colSums(is.na(fm)) == 0]
-
+fm
 dim(fm)
 
 #5.1c FRQ
@@ -290,10 +290,10 @@ tcode[c("INDPRO", "PAYEMS", "CPIAUCSL", "FEDFUNDS")]
 # INDPRO was transformed with 100 * d(log(x)) giving us the growth rate.
 # PAYEMS was transformed with 100 * d(log(x)) giving us the growth rate.
 # CIPAUCSL was transformed with 100 * d(d(log(x))) giving us the change in growth rate.
-# FEDFUNDS was transformed with d(x) giving us the first difference. 
+# FEDFUNDS was transformed with d(x) giving us the first difference.
 # 
-# INDPRO represents the total industrial production index where the growth trends ith the level of the series. 
-# The FEDFUNDS is the interest rate set by the Feds and does not follow a trend. Instead we take the difference of 
+# INDPRO represents the total industrial production index where the growth trends ith the level of the series.
+# The FEDFUNDS is the interest rate set by the Feds and does not follow a trend. Instead we take the difference of
 # each period to see how the interest rate changes over time.
 
 # 5.2. Estimate the Factors
@@ -343,8 +343,8 @@ for (T in init:(n - 1)) {
 
 c(RMSE_AR = sqrt(mean(e_ar^2)), RMSE_FA = sqrt(mean(e_fa^2)))
 
-# #Using the full data set to estimate the parameters then fitting it on the horse race model 
-# will include correlation in the data that are not present at the time. This causes information 
+# #Using the full data set to estimate the parameters then fitting it on the horse race model
+# will include correlation in the data that are not present at the time. This causes information
 # leakage when modeling the training set into the testing set.
 
 #5.4. A Direct Forecast of Inflation FRQ
@@ -374,6 +374,6 @@ direct_race <- function(series, h = 12, r = 3) {
 }
 
 direct_race("CPIAUCSL")
-# The percentage change was a 10.42% and 14.55% reduction in error for RMSE and MAE respectively. 
+# The percentage change was a 10.42% and 14.55% reduction in error for RMSE and MAE respectively.
 # The DM value of 0.000443 tells us that there is statistically significant result that FA reduced the error.
 
