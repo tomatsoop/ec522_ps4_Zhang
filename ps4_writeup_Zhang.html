@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Sabrina Zhang">
-<meta name="dcterms.date" content="2026-11-19">
+<meta name="dcterms.date" content="2026-11-20">
 
 <title>Problem Set 4</title>
 <style>
@@ -2214,8 +2214,9 @@ vertical-align: -.125em;
   <ul>
   <li><a href="#a-business-forecasting-horse-race-arima-vs.-ets" id="toc-a-business-forecasting-horse-race-arima-vs.-ets" class="nav-link active" data-scroll-target="#a-business-forecasting-horse-race-arima-vs.-ets">A Business Forecasting Horse Race: ARIMA vs. ETS</a></li>
   <li><a href="#a-liquor-sales-and-seasonal-trends" id="toc-a-liquor-sales-and-seasonal-trends" class="nav-link" data-scroll-target="#a-liquor-sales-and-seasonal-trends">2.1a : Liquor sales and seasonal trends</a></li>
+  <li><a href="#b" id="toc-b" class="nav-link" data-scroll-target="#b"><strong>2.1b</strong></a></li>
   <li><a href="#a" id="toc-a" class="nav-link" data-scroll-target="#a"><strong>2.2a</strong></a></li>
-  <li><a href="#b" id="toc-b" class="nav-link" data-scroll-target="#b"><strong>2.2b</strong></a></li>
+  <li><a href="#b-1" id="toc-b-1" class="nav-link" data-scroll-target="#b-1"><strong>2.2b</strong></a></li>
   <li><a href="#the-horse-race" id="toc-the-horse-race" class="nav-link" data-scroll-target="#the-horse-race">2.3. The Horse Race</a></li>
   <li><a href="#b-one-month-ahead-forecast" id="toc-b-one-month-ahead-forecast" class="nav-link" data-scroll-target="#b-one-month-ahead-forecast"><strong>2.3b One Month Ahead Foreca</strong>s<strong>t</strong></a></li>
   <li><a href="#are-the-differences-significant-dm-test" id="toc-are-the-differences-significant-dm-test" class="nav-link" data-scroll-target="#are-the-differences-significant-dm-test">2.4. Are the Differences Significant? DM Test</a></li>
@@ -2232,6 +2233,7 @@ vertical-align: -.125em;
   <li><a href="#b." id="toc-b." class="nav-link" data-scroll-target="#b."><strong>5.2b.</strong></a></li>
   <li><a href="#replicate-the-horse-race-from-class" id="toc-replicate-the-horse-race-from-class" class="nav-link" data-scroll-target="#replicate-the-horse-race-from-class">5.3. Replicate the Horse Race from Class</a></li>
   <li><a href="#a-direct-forecast-of-inflation" id="toc-a-direct-forecast-of-inflation" class="nav-link" data-scroll-target="#a-direct-forecast-of-inflation">5.4. A Direct Forecast of Inflation</a></li>
+  <li><a href="#reflection" id="toc-reflection" class="nav-link" data-scroll-target="#reflection">Reflection</a></li>
   </ul>
 </nav>
 </div>
@@ -2256,7 +2258,7 @@ vertical-align: -.125em;
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 19, 2026</p>
+      <p class="date">November 20, 2026</p>
     </div>
   </div>
   
@@ -2296,6 +2298,9 @@ vertical-align: -.125em;
 </div>
 </div>
 </div>
+</section>
+<section id="b" class="level3">
+<h3 class="anchored" data-anchor-id="b"><strong>2.1b</strong></h3>
 <p>The seasonal trend of liquor sales remain steady throughout the year however we see a spike in December followed by a dip in January. The auto plot shows growth with the level of the series and suggesting that logging sales may take away that growth in level while capturing the month to month trend.</p>
 </section>
 <section id="a" class="level3">
@@ -2321,8 +2326,8 @@ vertical-align: -.125em;
 <p>The ARIMA Model choose the parameters (1,0,2)(2,1,1)[12] with drift. This means that we are lagging it for 2 periods in the seasonal component(P), taking the first difference (D), 1 period of forecast errors (Q) For the non seasonal model, we are lagging it once and incorporating 2 periods of forecast errors (q). For the ETS model, it chooses 3 additive components with alpha = 0.329 (level smoothing), beta = 0.007 (trend smoothing), and gamma = 0.0001 (seasonal smoothing).</p>
 <p>The ETS model uses all additive terms for Error, Trend, and Seasonality (A,A,A). This means that the seasonal values are added to the model relative to the series units, the trend is represented by a change in fixed units over time, and the error term is added to the predictor.</p>
 </section>
-<section id="b" class="level3">
-<h3 class="anchored" data-anchor-id="b"><strong>2.2b</strong></h3>
+<section id="b-1" class="level3">
+<h3 class="anchored" data-anchor-id="b-1"><strong>2.2b</strong></h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>liquor_fit <span class="sc">|&gt;</span> <span class="fu">select</span>(arima) <span class="sc">|&gt;</span> <span class="fu">gg_tsresiduals</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
@@ -2346,7 +2351,7 @@ vertical-align: -.125em;
 </section>
 <section id="the-horse-race" class="level3">
 <h3 class="anchored" data-anchor-id="the-horse-race">2.3. The Horse Race</h3>
-<p>The dates of the first forecast is January 2002 and the last forecast is December 2019 with 216 forecast origins.</p>
+<p>The dates of the first forecast is January 2002 and the last forecast is December 2019.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(liquor_cv_fc,<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -2376,7 +2381,7 @@ vertical-align: -.125em;
 </section>
 <section id="b-one-month-ahead-forecast" class="level3">
 <h3 class="anchored" data-anchor-id="b-one-month-ahead-forecast"><strong>2.3b One Month Ahead Foreca</strong>s<strong>t</strong></h3>
-<p>The start and ending dates are January 2002 and December 2019. For the one step ahead forecast, we get 216 forecast origins.</p>
+<p>For the one step ahead forecast, we get 216 forecast origins. Comparing the ARIMA vs MAE vs SNAIVE models, the ARIMA model forecasts the most accurately for both the RMSE and the MAE model.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>liquor_accuracy_table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
@@ -2408,7 +2413,6 @@ vertical-align: -.125em;
 </table>
 </div>
 </div>
-<p>Comparing the ARIMA vs MAE vs SNAIVE models, the ARIMA model forecasts the most accurately for both the RMSE and the MAE model.</p>
 </section>
 <section id="are-the-differences-significant-dm-test" class="level3">
 <h3 class="anchored" data-anchor-id="are-the-differences-significant-dm-test">2.4. Are the Differences Significant? DM Test</h3>
@@ -2741,6 +2745,11 @@ Cumulative Proportion  0.149840 0.223910 0.294530 0.350280 0.393820</code></pre>
 </div>
 </div>
 <p>The percentage change was a 10.42% and 14.55% reduction in error for RMSE and MAE respectively. The DM value of 0.000443 tells us that there is statistically significant result that FA reduced the error compared to the AR model.</p>
+</section>
+<section id="reflection" class="level3">
+<h3 class="anchored" data-anchor-id="reflection">Reflection</h3>
+<p>For this problem set, there is a recurring pattern where model complexity does not improve testing fit. We see this when comparing ARIMA vs. ETS vs. SNAIVE. While ARIMA beat ETS and SNAIVE, the ARIMA model alone still performed better than the combo model (ETS + ARIMA). In this case, ARIMA with parameters (1,0,2)(2,1,1)[12], being a slightly more complicated model, still beat the other models.</p>
+<p>We see this again when comparing VAR(1) to VAR(4) and BVAR(4), lambda = 0.3, with BVAR(4), lambda = 0.05. The shrinkage parameters and the weights used in the data constrain variables within a model. Some variables do better, suggesting that additional lags combined with shrinkage may be beneficial. Overall, more complicated models do not necessarily improve fit when tested on out-of-sample data, however, producing the model also needs to account for case by case judgment in how the variables will be transformed.</p>
 </section>
 
 </main>

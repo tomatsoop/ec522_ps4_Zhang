@@ -37,6 +37,8 @@ sales_auto
 log_sales_season
 ```
 
+### **2.1b**
+
 The seasonal trend of liquor sales remain steady throughout the year however we see a spike in December followed by a dip in January. The auto plot shows growth with the level of the series and suggesting that logging sales may take away that growth in level while capturing the month to month trend.
 
 ### **2.2a**
@@ -67,7 +69,7 @@ The residuals are clustered around 0 but there still seems to be lagging trends 
 
 ### 2.3. The Horse Race
 
-The dates of the first forecast is January 2002 and the last forecast is December 2019 with 216 forecast origins.
+The dates of the first forecast is January 2002 and the last forecast is December 2019.
 
 ```{r}
 head(liquor_cv_fc,3)
@@ -79,13 +81,11 @@ tail(liquor_cv_fc,3)
 
 ### **2.3b One Month Ahead Foreca**s**t**
 
-The start and ending dates are January 2002 and December 2019. For the one step ahead forecast, we get 216 forecast origins.
+For the one step ahead forecast, we get 216 forecast origins. Comparing the ARIMA vs MAE vs SNAIVE models, the ARIMA model forecasts the most accurately for both the RMSE and the MAE model.
 
 ```{r}
 liquor_accuracy_table
 ```
-
-Comparing the ARIMA vs MAE vs SNAIVE models, the ARIMA model forecasts the most accurately for both the RMSE and the MAE model.
 
 ### 2.4. Are the Differences Significant? DM Test
 
@@ -230,3 +230,9 @@ direct_race("CPIAUCSL")
 ```
 
 The percentage change was a 10.42% and 14.55% reduction in error for RMSE and MAE respectively. The DM value of 0.000443 tells us that there is statistically significant result that FA reduced the error compared to the AR model.
+
+### Reflection
+
+For this problem set, there is a recurring pattern where model complexity does not improve testing fit. We see this when comparing ARIMA vs. ETS vs. SNAIVE. While ARIMA beat ETS and SNAIVE, the ARIMA model alone still performed better than the combo model (ETS + ARIMA). In this case, ARIMA with parameters (1,0,2)(2,1,1)\[12\], being a slightly more complicated model, still beat the other models.
+
+We see this again when comparing VAR(1) to VAR(4) and BVAR(4), lambda = 0.3, with BVAR(4), lambda = 0.05. The shrinkage parameters and the weights used in the data constrain variables within a model. Some variables do better, suggesting that additional lags combined with shrinkage may be beneficial. Overall, more complicated models do not necessarily improve fit when tested on out-of-sample data, however, producing the model also needs to account for case by case judgment in how the variables will be transformed.
