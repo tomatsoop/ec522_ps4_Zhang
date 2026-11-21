@@ -325,7 +325,6 @@ pc1
 pc2
 # The names of the series can be looked up in the FRED-MD documentation, FRED-MD_updated_appendix.pdf, which is posted on Canvas. Based on these series, and on your plot, how would you describe what each factor captures?
 
-
 # 5.3. Replicate the Horse Race from Class FRQ
 ip <- fm$INDPRO
 n <- nrow(Z)
